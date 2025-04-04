@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "ssh-connect": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/path/to/ssh-connect",
+        "run",
+        "ssh-connect"
+      ],
+      "env": {
+        "SSH_HOST": "example.com",
+        "SSH_PORT": "22",
+        "SSH_USERNAME": "username",
+        "SSH_PASSWORD": "password",
+        "SSH_KEY_PATH": "/path/to/private_key",
+        "SSH_KEY_PASSPHRASE": "key_passphrase"
+      },
+      "disabled": false,
+      "autoApprove": []
+    }
+  }
+}

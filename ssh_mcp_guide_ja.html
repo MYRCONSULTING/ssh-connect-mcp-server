@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSH MCPサーバーガイド</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .tool {
+            background-color: #f9f9f9;
+            border-left: 4px solid #3498db;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+        }
+        .tool h3 {
+            margin-top: 0;
+        }
+        pre {
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+            background-color: #f1f1f1;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .workflow {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 30px;
+        }
+        .workflow h2 {
+            margin-top: 0;
+        }
+        .note {
+            background-color: #fff8dc;
+            padding: 10px;
+            border-left: 4px solid #f39c12;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SSH MCPサーバーガイド</h1>
+        <p>このガイドでは、ClineでSSH MCPサーバーを使用する方法の例を提供します。</p>
+
+        <div class="note">
+            <strong>注意：</strong> SSH MCPサーバーは、適切なSSH接続パラメータを使用してMCP設定ファイルで正しく構成する必要があります。
+        </div>
+
+        <h2>利用可能なツール</h2>
+        
+        <div class="tool">
+            <h3>connect</h3>
+            <p>設定された認証情報を使用してSSHサーバーに接続します。</p>
+            <pre><code>use_mcp_tool(
+    server_name="ssh-connect", 
+    tool_name="connect", 
+    arguments={}
+)</code></pre>
+            <p>引数を提供することで環境変数を上書きすることもできます：</p>
+            <pre><code>use_mcp_tool(
+    server_name="ssh-connect", 
+    tool_name="connect", 
+    arguments={
+        "host": "example.com",
+        "port": 22,
+        "username": "user",
+        "password": "pass"
+    }
+)</code></pre>
+        </div>
+
+        <div class="tool">
+            <h3>execute</h3>
+            <p>SSHサーバーでコマンドを実行します。</p>
+            <pre><code>use_mcp_tool(
+    server_name="ssh-connect", 
+    tool_name="execute", 
+    arguments={
+        "command": "ls -la",
+        "timeout": 60  # オプション、デフォルトは60秒
+    }
+)</code></pre>
+        </div>
+
+        <div class="tool">
+            <h3>upload</h3>
+            <p>ファイルをSSHサーバーにアップロードします。</p>
+            <pre><code>use_mcp_tool(
+    server_name="ssh-connect", 
+    tool_name="upload", 
+    arguments={
+        "local_path": "/path/to/local/file",
+        "remote_path": "/path/to/remote/file"
+    }
+)</code></pre>
+        </div>
+
+        <div class="tool">
+            <h3>download</h3>
+            <p>SSHサーバーからファイルをダウンロードします。</p>
+            <pre><code>use_mcp_tool(
+    server_name="ssh-connect", 
+    tool_name="download", 
+    arguments={
+        "remote_path": "/path/to/remote/file",
+        "local_path": "/path/to/local/file"
+    }
+)</code></pre>
+        </div>
+
+        <div class="tool">
+            <h3>list_files</h3>
+            <p>SSHサーバー上のディレクトリ内のファイルを一覧表示します。</p>
+            <pre><code>use_mcp_tool(
+    server_name="ssh-connect", 
+    tool_name="list_files", 
+    arguments={
+        "path": "/path/to/directory"
+    }
+)</code></pre>
+        </div>
+
+        <div class="tool">
+            <h3>disconnect</h3>
+            <p>SSHサーバーから切断します。</p>
+            <pre><code>use_mcp_tool(
+    server_name="ssh-connect", 
+    tool_name="disconnect", 
+    arguments={}
+)</code></pre>
+        </div>
+
+        <div class="workflow">
+            <h2>完全なワークフロー例</h2>
+            <p>以下は完全なワークフロー例です：</p>
+            <ol>
+                <li>
+                    <p>SSHサーバーに接続：</p>
+                    <pre><code>use_mcp_tool(server_name="ssh-connect", tool_name="connect", arguments={})</code></pre>
+                </li>
+                <li>
+                    <p>コマンドを実行：</p>
+                    <pre><code>use_mcp_tool(server_name="ssh-connect", tool_name="execute", arguments={"command": "ls -la"})</code></pre>
+                </li>
+                <li>
+                    <p>ファイルをアップロード：</p>
+                    <pre><code>use_mcp_tool(server_name="ssh-connect", tool_name="upload", arguments={"local_path": "example.txt", "remote_path": "/home/user/example.txt"})</code></pre>
+                </li>
+                <li>
+                    <p>アップロードを確認するためにファイルを一覧表示：</p>
+                    <pre><code>use_mcp_tool(server_name="ssh-connect", tool_name="list_files", arguments={"path": "/home/user"})</code></pre>
+                </li>
+                <li>
+                    <p>ファイルをダウンロード：</p>
+                    <pre><code>use_mcp_tool(server_name="ssh-connect", tool_name="download", arguments={"remote_path": "/home/user/example.txt", "local_path": "downloaded_example.txt"})</code></pre>
+                </li>
+                <li>
+                    <p>SSHサーバーから切断：</p>
+                    <pre><code>use_mcp_tool(server_name="ssh-connect", tool_name="disconnect", arguments={})</code></pre>
+                </li>
+            </ol>
+        </div>
+
+        <div class="note">
+            <p><strong>重要：</strong> 作業が終わったら、リソースを解放するために必ずSSHサーバーから切断してください。</p>
+        </div>
+    </div>
+</body>
+</html>
